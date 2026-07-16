@@ -24,6 +24,21 @@ Data fetchers: `fetch_regsho.py` (FINRA daily short volume → `data/regsho.csv`
 FRED pulled keylessly via `fredgraph.csv` (note: clips to ~3y for some series);
 BTC from Coinbase public candles. `data/` is disposable cache.
 
+## In flight
+
+- **Edge C — insider-buy clusters** (`fetch_form4.py` + `insider_edge.py`):
+  hypothesis and thresholds pre-registered in `insider_edge.py` and committed
+  BEFORE the Form 4 download finished (verifiable in git history). Event:
+  officer/director open-market purchases (code P) >= $100k per stock-week;
+  measure abnormal (vs SPY) returns at 5/21/63 days with a random-baseline
+  sanity check.
+- **Options-chain snapshotter** (`snapshot_options.py` + LaunchAgent at
+  `~/Library/LaunchAgents/com.conradgarnett.options-snapshot.plist`): free
+  chains have no history, so this builds it forward — 20 liquid names, ~6
+  expiries, daily at 15:45 ET (~1-3 MB/day). After ~6 months the
+  options_mispricing scanner becomes event-testable. Activate with
+  `launchctl load ~/Library/LaunchAgents/com.conradgarnett.options-snapshot.plist`.
+
 ## Untested candidates (ranked)
 
 1. **SEC EDGAR Form 4 insider-buying clusters** (`sec_edgar.py`) — the
